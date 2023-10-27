@@ -1,17 +1,16 @@
 * {
   margin: 0;
   padding: 0;
-}
-
-html {
   box-sizing: border-box;
 }
 
-*::before, *::after {
+*::before,
+*::after {
   box-sizing: inherit;
 }
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
@@ -22,6 +21,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: black;
 }
 
 code {
