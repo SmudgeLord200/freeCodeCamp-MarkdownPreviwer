@@ -1,10 +1,17 @@
-import logo from './logo.svg';
 import './App.css';
 import { FaFreeCodeCamp, FaExpandArrowsAlt, FaExpandAlt } from 'react-icons/fa';
 import { useState } from 'react';
 import { marked } from 'marked';
-import DOMPurify from 'dompurify';
-import Markdown from 'https://esm.sh/react-markdown@9'
+
+// configure marked options
+marked.setOptions({
+  breaks: true,
+});
+
+const renderer = new marked.Renderer();
+renderer.link = function(href, title, text) {
+  return `<a target="_blank" href="${href}" title="${title || ''}">${text}</a>`;
+};
 
 const defaultMarkDown = `# Welcome to my React Markdown Previewer!
 
@@ -51,42 +58,44 @@ And here. | Okay. | I think we get it.
 ![freeCodeCamp Logo](https://cdn.freecodecamp.org/testable-projects-fcc/images/fcc_secondary.svg)
 `;
 
-const Editor = ({ content, setContent }) => {
-
-  const handleContentChange = (event) => {
-    setContent(event.target.value);
-  }
+const Editor = ({ content, handleContentChange, openEditor, onHandleEditorButtonClick, openPreviwer }) => {
+  const expandIcon = openEditor ? <FaExpandAlt /> : <FaExpandArrowsAlt />;
+  const editorClassName = openEditor ? 'expandedEditor' : '';
+  const hidePreviewer = openPreviwer ? 'hidePreviewer' : '';
 
   return (
-    <div className='editorWrap'>
+    <div className={`editorWrap ${editorClassName} ${hidePreviewer}`}>
       <div className="toolbar">
         <FaFreeCodeCamp />
         <h3>Editor</h3>
-        {/* TODO add event listener for expand */}
-        <FaExpandArrowsAlt />
+        <button className="iconButton" onClick={onHandleEditorButtonClick}>{expandIcon}</button>
       </div>
       <textarea
         id="editor"
         name="editor"
-        value={DOMPurify.sanitize(content)}
+        value={content}
         onChange={handleContentChange}
       />
     </div>
   )
 }
 
-const Previewer = ({ content }) => {
+const Previewer = ({ content, openPreviwer, onHandlePreviewerButtonClick, openEditor }) => {
+  const expandIcon = openPreviwer ? <FaExpandAlt /> : <FaExpandArrowsAlt />;
+  const hidePreviewer = openEditor ? 'hidePreviewer' : '';
+
   return (
-    <div className='previewWrap'>
+    <div className={`previewWrap ${hidePreviewer}`}>
       <div className="toolbar">
         <FaFreeCodeCamp />
         <h3>Previewer</h3>
-        {/* TODO add event listener for expand */}
-        <FaExpandArrowsAlt />
+        <button className="iconButton" onClick={onHandlePreviewerButtonClick}>{expandIcon}</button>
       </div>
-      <div id="preview">
-        <Markdown>{content}</Markdown>
-      </div>
+      <div id="preview"
+        dangerouslySetInnerHTML={{
+          __html: marked(content, { renderer: renderer })
+        }}
+      />
     </div>
   )
 }
@@ -94,10 +103,37 @@ const Previewer = ({ content }) => {
 function App() {
   const [content, setContent] = useState(defaultMarkDown);
 
+  const handleContentChange = (event) => {
+    setContent(event.target.value);
+  }
+
+  const [openEditor, setEditorOpen] = useState(false);
+
+  const onHandleEditorButtonClick = () => {
+    setEditorOpen((prev) => !prev);
+  }
+
+  const [openPreviwer, setPreviwerOpen] = useState(false);
+
+  const onHandlePreviewerButtonClick = () => {
+    setPreviwerOpen((prev) => !prev);
+  }
+
   return (
     <div className="wrapper">
-      <Editor content={content} setContent={setContent} />
-      <Previewer content={content} />
+      <Editor
+        content={content}
+        handleContentChange={handleContentChange}
+        openEditor={openEditor}
+        onHandleEditorButtonClick={onHandleEditorButtonClick}
+        openPreviwer={openPreviwer}
+      />
+      <Previewer
+        content={content}
+        openPreviwer={openPreviwer}
+        onHandlePreviewerButtonClick={onHandlePreviewerButtonClick}
+        openEditor={openEditor}
+      />
     </div>
   );
 }

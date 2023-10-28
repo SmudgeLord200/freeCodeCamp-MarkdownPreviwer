@@ -21,6 +21,7 @@
 
 .editorWrap {
   min-width: 450px;
+  margin-bottom: 0.5rem;
 }
 
 /* textarea */
@@ -35,6 +36,11 @@
   color: #3f3;
   outline: none;
   border-color: white;
+}
+
+/* expand to full height */
+.expandedEditor #editor {
+  height: 100vh;
 }
 
 .previewWrap {
@@ -54,14 +60,19 @@
   padding: 2rem;
 }
 
+.hidePreviewer, .hideEditor {
+  display: none;
+}
+
 img {
   width: 100%;
   margin-top: 1rem;
-  background-color: white;
+  background-color: #f5f5f5;
+  padding: 1rem;
 }
 
 code, pre {
-  background-color: white;
+  background-color: #222222;
 }
 
 pre code {
@@ -73,6 +84,21 @@ pre {
   margin: 1rem 0;
 }
 
-ol {
-  padding: 0 1rem;
+ol, ul {
+  padding: 0 2rem;
+}
+
+a:active {
+  color: #6495ED;
+}
+
+a {
+  color: #B0E0E6;
+}
+
+.iconButton {
+  cursor: pointer;
+  background-color: black;
+  color: #0f0;
+  border: 0;
 }
